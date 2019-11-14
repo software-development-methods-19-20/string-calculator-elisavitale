@@ -35,4 +35,9 @@ public class AddNumbersTest {
     void newLineAndComma() {
         assertEquals(7, StringCalculator.add("3\n3,1"));
     }
+
+    @Test
+    void semicolonDelimiter() {
+        assertEquals(3, StringCalculator.add("//;\n1;2"));
+    }
 }
