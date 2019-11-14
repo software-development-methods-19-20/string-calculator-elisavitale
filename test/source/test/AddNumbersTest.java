@@ -25,4 +25,14 @@ public class AddNumbersTest {
     void fiveNumbers() {
         assertEquals(15, StringCalculator.add("1,2,3,4,5"));
     }
+
+    @Test
+    void newLineBetweenTwoNumbers() {
+        assertEquals(7, StringCalculator.add("3\n4"));
+    }
+
+    @Test
+    void newLineAndComma() {
+        assertEquals(7, StringCalculator.add("3\n3,1"));
+    }
 }
