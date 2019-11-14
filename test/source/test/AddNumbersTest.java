@@ -20,4 +20,9 @@ public class AddNumbersTest {
     void twoNumbers() {
         assertEquals(3, StringCalculator.add("1,2"));
     }
+
+    @Test
+    void fiveNumbers() {
+        assertEquals(15, StringCalculator.add("1,2,3,4,5"));
+    }
 }
