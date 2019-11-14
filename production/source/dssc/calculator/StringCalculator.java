@@ -5,7 +5,7 @@ public class StringCalculator {
     public static int add(String stringOfNumbers) {
         if (stringOfNumbers.isEmpty()) {
             return 0;
-        } else if (stringOfNumbers.contains(",") || stringOfNumbers.contains("\n")) {
+        } else if (thereAreManyNumbers(stringOfNumbers)) {
             return addAllNumbers(stringOfNumbers);
         } else {
             return onlyOneNumber(stringOfNumbers);
@@ -14,6 +14,10 @@ public class StringCalculator {
 
     public static int toInt(String string) {
         return Integer.valueOf(string);
+    }
+
+    public static boolean thereAreManyNumbers(String string) {
+        return string.contains(",") || string.contains("\n");
     }
 
     public static String[] getAllNumbers(String stringOfNumbers) {
