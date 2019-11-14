@@ -6,22 +6,25 @@ public class StringCalculator {
         if (stringOfNumbers.isEmpty()) {
             return 0;
         } else if (stringOfNumbers.contains(",")) {
-            return addTwoNumbers(stringOfNumbers);
+            return addAllNumbers(stringOfNumbers);
         } else {
             return onlyOneNumber(stringOfNumbers);
         }
     }
 
     public static int toInt(String string) {
-        return Integer.parseInt(string);
+        return Integer.valueOf(string);
     }
 
-    public static String[] getTwoNumbers(String numbers) {
+    public static String[] getAllNumbers(String numbers) {
         return numbers.split(",");
     }
 
-    public static int addTwoNumbers(String numbers) {
-        return toInt(getTwoNumbers(numbers)[0]) + toInt(getTwoNumbers(numbers)[1]);
+    public static int addAllNumbers(String numbers) {
+        int sum = 0;
+        for (String number : getAllNumbers(numbers))
+            sum += toInt(number);
+        return sum;
     }
 
     public static int onlyOneNumber(String stringOfNumbers) {
