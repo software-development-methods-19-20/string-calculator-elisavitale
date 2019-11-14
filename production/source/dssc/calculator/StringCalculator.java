@@ -16,13 +16,13 @@ public class StringCalculator {
         return Integer.valueOf(string);
     }
 
-    public static String[] getAllNumbers(String numbers) {
-        return numbers.split(",");
+    public static String[] getAllNumbers(String stringOfNumbers) {
+        return stringOfNumbers.split(",");
     }
 
-    public static int addAllNumbers(String numbers) {
+    public static int addAllNumbers(String stringOfNumbers) {
         int sum = 0;
-        for (String number : getAllNumbers(numbers))
+        for (String number : getAllNumbers(stringOfNumbers))
             sum += toInt(number);
         return sum;
     }
