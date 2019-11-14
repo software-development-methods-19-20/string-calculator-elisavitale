@@ -40,4 +40,9 @@ public class AddNumbersTest {
     void semicolonDelimiter() {
         assertEquals(3, StringCalculator.add("//;\n1;2"));
     }
+
+    @Test
+    void largerThanOneThousand() {
+        assertEquals(2, StringCalculator.add("2,1001"));
+    }
 }
