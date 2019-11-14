@@ -5,7 +5,7 @@ public class StringCalculator {
     public static int add(String stringOfNumbers) {
         if (stringOfNumbers.isEmpty()) {
             return 0;
-        } else if (containsDelimiters(stringOfNumbers)) {
+        } else if (thereAreManyNumbers(stringOfNumbers)) {
             return addAllNumbers(stringOfNumbers);
         } else {
             return onlyOneNumber(stringOfNumbers);
@@ -16,24 +16,31 @@ public class StringCalculator {
         return Integer.valueOf(string);
     }
 
-    static String[] defaultDelimiters = {",", "\n"};
+    public static boolean thereAreManyNumbers(String string) {
+        return containsNewDelimiters(string) || string.contains(",") || string.contains("\n");
+    }
+
+    public static boolean containsNewDelimiters(String string) {
+        if (string.startsWith("//"))
+            return true;
+        else return false;
+    }
 
     public static String getNewDelimiter(String string) {
-        if (string.startsWith("//"))
-            return string.substring(3,3);
+        if (containsNewDelimiters(string))
+            return string.substring(2, string.indexOf("\n"));
         else return "";
     }
 
-    public static boolean containsDelimiters(String string) {
-        if (string.startsWith("//"))
-            return true;
-        else
-            return string.contains(defaultDelimiters[0]) || string.contains(defaultDelimiters[1]);
+    public static String ignoreFirstLine(String string) {
+        return string.substring(string.indexOf("\n") + 1);
     }
 
     public static String[] getAllNumbers(String stringOfNumbers) {
-        if (containsDelimiters(stringOfNumbers))
-            return stringOfNumbers.split("[/,;\n]");
+        if (containsNewDelimiters(stringOfNumbers)) {
+            String newDelimiter = getNewDelimiter(stringOfNumbers);
+            return ignoreFirstLine(stringOfNumbers).split(newDelimiter);
+        }
         else return stringOfNumbers.split("[,\n]");
     }
 
