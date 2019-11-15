@@ -56,12 +56,14 @@ public class StringCalculator {
 
     public static String getAllDelimiters(String string) {
         if (containsNewDelimiter(string))
-            return "[" + getNewDelimiter(string) + ",\n]";
+            return getNewDelimiter(string);
         else return "[,\n]";
     }
 
     public static String getNewDelimiter(String string) {
-        return string.substring(2, string.indexOf("\n"));
+        if (string.contains("[") && string.contains("]"))
+            return string.substring(3, string.indexOf("]"));
+        else return string.substring(2, string.indexOf("\n"));
     }
 
     public static int toInt(String string) {
