@@ -50,4 +50,9 @@ public class AddNumbersTest {
     void threeColonDelimiter() {
         assertEquals(6, StringCalculator.add("//[:::]\n1:::2:::3"));
     }
+
+    @Test
+    void twoDelimiters() {
+        assertEquals(6, StringCalculator.add("//[:][°]\n1:2°3"));
+    }
 }
