@@ -39,18 +39,19 @@ public class StringCalculator {
     }
 
     public static String ignoreFirstLine(String string) {
-        if (containsNewDelimiter(string))
+        if (containsNewDelimiters(string))
             return string.substring(string.indexOf("\n") + 1);
         else return string;
     }
 
+    public static String standardDelimiters = "[,\n]";
+
     public static boolean thereAreDelimiters(String string) {
-        return string.contains(",") || string.contains("\n") || containsNewDelimiter(string);
+        return string.contains(",") || string.contains("\n") || containsNewDelimiters(string);
     }
 
-    public static boolean containsNewDelimiter(String string) {
-        if (string.startsWith("//") && string.contains("\n"))
-            return true;
+    public static boolean containsNewDelimiters(String string) {
+        if (string.startsWith("//") && string.contains("\n")) return true;
         else return false;
     }
 
@@ -60,21 +61,37 @@ public class StringCalculator {
     }
 
     public static String getAllDelimiters(String string) {
-        if (containsNewDelimiter(string))
-            return getNewDelimiter(string);
-        else return "[,\n]";
+        if (containsNewDelimiters(string))
+            return getNewDelimiters(string);
+        else return standardDelimiters;
     }
 
-    public static String getNewDelimiter(String string) {
-        if (containsMultipleDelimiters(string)) {
-            String delimiters = "";
-            int max_index = string.lastIndexOf("]");
-            int starting_index = string.indexOf("[");
-            for (int index = starting_index; index < max_index; index += 3) {
-                delimiters += string.charAt(index + 1);
-            }
-            return "[" + delimiters + "]";
-        } else if (string.contains("[") && string.contains("]"))
+    public static String getNewDelimiters(String string) {
+        if (containsMultipleDelimiters(string))
+            return extractMultipleDelimiters(string);
+        else
+            return onlyOneNewDelimiter(string);
+    }
+
+    public static String extractMultipleDelimiters(String string) {
+        String delimiters = "";
+        do {
+            delimiters = updateDelimiters(delimiters, string);
+            string = cutString(string);
+        } while (string.contains("]"));
+        return "[" + delimiters + "]";
+    }
+
+    public static String updateDelimiters(String delimiters, String string) {
+        return delimiters + string.substring(string.indexOf("[") + 1, string.indexOf("]"));
+    }
+
+    public static String cutString(String string) {
+        return string.substring(string.indexOf("]") + 1);
+    }
+
+    public static String onlyOneNewDelimiter(String string) {
+        if (string.contains("[") && string.contains("]"))
             return string.substring(3, string.indexOf("]"));
         else return string.substring(2, string.indexOf("\n"));
     }
