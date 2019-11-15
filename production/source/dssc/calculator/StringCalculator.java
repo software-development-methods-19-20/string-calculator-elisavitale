@@ -22,16 +22,6 @@ public class StringCalculator {
         else return new String[] {string};
     }
 
-    public static boolean thereAreDelimiters(String string) {
-        return string.contains(",") || string.contains("\n") || containsNewDelimiter(string);
-    }
-
-    public static boolean containsNewDelimiter(String string) {
-        if (string.startsWith("//") && string.contains("\n"))
-            return true;
-        else return false;
-    }
-
     public static String[] splitAndFilterNumbers(String string) {
         return ignoreLargerThan1000(splitNumbers(string));
     }
@@ -54,6 +44,21 @@ public class StringCalculator {
         else return string;
     }
 
+    public static boolean thereAreDelimiters(String string) {
+        return string.contains(",") || string.contains("\n") || containsNewDelimiter(string);
+    }
+
+    public static boolean containsNewDelimiter(String string) {
+        if (string.startsWith("//") && string.contains("\n"))
+            return true;
+        else return false;
+    }
+
+    public static boolean containsMultipleDelimiters(String string) {
+        if (string.contains("][")) return true;
+        else return false;
+    }
+
     public static String getAllDelimiters(String string) {
         if (containsNewDelimiter(string))
             return getNewDelimiter(string);
@@ -61,7 +66,15 @@ public class StringCalculator {
     }
 
     public static String getNewDelimiter(String string) {
-        if (string.contains("[") && string.contains("]"))
+        if (containsMultipleDelimiters(string)) {
+            String delimiters = "";
+            int max_index = string.lastIndexOf("]");
+            int starting_index = string.indexOf("[");
+            for (int index = starting_index; index < max_index; index += 3) {
+                delimiters += string.charAt(index + 1);
+            }
+            return "[" + delimiters + "]";
+        } else if (string.contains("[") && string.contains("]"))
             return string.substring(3, string.indexOf("]"));
         else return string.substring(2, string.indexOf("\n"));
     }
