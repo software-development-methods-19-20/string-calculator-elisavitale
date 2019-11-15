@@ -2,31 +2,45 @@ package dssc.calculator;
 
 public class StringCalculator {
 
-    public static int add(String stringOfNumbers) {
-        if (stringOfNumbers.isEmpty())
+    public static int add(String numbers) {
+        if (numbers.isEmpty())
             return 0;
         else
-            return addAllNumbers(stringOfNumbers);
+            return addAllNumbers(numbers);
     }
 
-    public static int addAllNumbers(String string) {
-        int sum = 0;
-        for (String number : getAllNumbers(string))
-            sum += toInt(number);
-        return sum;
+    public static int addAllNumbers(String numbers) {
+        int result = 0;
+        for (String num : getAllNumbers(numbers))
+            result += toInt(num);
+        return result;
     }
 
-    public static String[] getAllNumbers(String string) {
-        if (thereAreDelimiters(string))
-            return splitAndFilterNumbers(string);
-        else return new String[] {string};
+    public static String[] getAllNumbers(String numbers) {
+        if (thereAreDelimiters(numbers))
+            return splitAndFilterNumbers(numbers);
+        else return new String[] {numbers};
     }
 
-    public static String[] splitAndFilterNumbers(String string) {
-        return ignoreLargerThan1000(splitNumbers(string));
+    public static boolean thereAreDelimiters(String numbers) {
+        return containsStandardDelimiters(numbers) || containsNewDelimiters(numbers);
     }
 
-    public static String[] ignoreLargerThan1000(String[] allNumbers) {
+    public static String[] standardDelimiters = {",", "\n"};
+
+    public static boolean containsStandardDelimiters(String numbers) {
+        return numbers.contains(standardDelimiters[0]) || numbers.contains(standardDelimiters[1]);
+    }
+
+    public static boolean containsNewDelimiters(String numbers) {
+        return numbers.startsWith("//") && numbers.contains("\n");
+    }
+
+    public static String[] splitAndFilterNumbers(String numbers) {
+        return keepSmallerThan1000(splitNumbers(numbers));
+    }
+
+    public static String[] keepSmallerThan1000(String[] allNumbers) {
         String filteredNumbers = "";
         for (String number : allNumbers)
             if (toInt(number) < 1000)
@@ -34,79 +48,74 @@ public class StringCalculator {
         return filteredNumbers.split(",");
     }
 
-    public static String[] splitNumbers(String string) {
-        return ignoreFirstLine(cleanDelimiters(string)).split(",");
+    public static int toInt(String string) {
+        return Integer.parseInt(string);
     }
 
-    public static String cleanDelimiters(String string) {
-        String[] delimiters = getAllDelimiters(string);
-        for (String del : delimiters)
-            string = string.replace(del, ",");
-        return string;
+    public static String[] splitNumbers(String numbers) {
+        return cleanString(numbers).split(",");
     }
 
-    public static String ignoreFirstLine(String string) {
-        if (containsNewDelimiters(string))
-            return cutFirstLine(string);
-        else return string;
+    public static String cleanString(String numbers) {
+        return ignoreDelimiterDeclarationLine(cleanAllDelimiters(numbers));
     }
 
-    public static String cutFirstLine(String string) {
-        return string.substring(string.indexOf("\n") + 1);
+    public static String ignoreDelimiterDeclarationLine(String numbers) {
+        if (containsNewDelimiters(numbers))
+            return cutFirstLine(numbers);
+        else return numbers;
     }
 
-    public static String[] standardDelimiters = {",", "\n"};
-
-    public static boolean thereAreDelimiters(String string) {
-        return string.contains(",") || string.contains("\n") || containsNewDelimiters(string);
+    public static String cutFirstLine(String numbers) {
+        return numbers.substring(numbers.indexOf("\n") + 1);
     }
 
-    public static boolean containsNewDelimiters(String string) {
-        return string.startsWith("//") && string.contains("\n");
+    public static String cleanAllDelimiters(String numbers) {
+        for (String delimiter : getAllDelimiters(numbers))
+            numbers = numbers.replace(delimiter, ",");
+        return numbers;
     }
 
-    public static boolean containsMultipleDelimiters(String string) {
-        return string.contains("][");
-    }
-
-    public static String[] getAllDelimiters(String string) {
-        if (containsNewDelimiters(string))
-            return getNewDelimiters(string);
+    public static String[] getAllDelimiters(String numbers) {
+        if (containsNewDelimiters(numbers))
+            return getNewDelimiters(numbers);
         else return standardDelimiters;
     }
 
-    public static String[] getNewDelimiters(String string) {
-        if (containsMultipleDelimiters(string))
-            return extractMultipleDelimiters(string);
+    public static String[] getNewDelimiters(String numbers) {
+        if (containsManyOrLongDelimiters(numbers))
+            return getManyOrLongDelimiters(numbers);
         else
-            return new String[]{onlyOneNewDelimiter(string)};
+            return new String[]{getOneShortDelimiter(numbers)};
     }
 
-    public static String[] extractMultipleDelimiters(String string) {
+    public static boolean containsManyOrLongDelimiters(String numbers) {
+        return numbers.contains("[") || numbers.contains("]");
+    }
+
+    public static String[] getManyOrLongDelimiters(String numbers) {
         String delimiters = "";
         do {
-            delimiters = updateDelimiters(delimiters, string);
-            string = cutString(string);
-        } while (string.contains("]"));
+            delimiters = addNextDelimiter(delimiters, numbers);
+            numbers = cutString(numbers);
+        } while (containsManyOrLongDelimiters(numbers));
         return delimiters.split(",");
     }
 
-    public static String updateDelimiters(String delimiters, String string) {
-        return delimiters + string.substring(string.indexOf("[") + 1, string.indexOf("]")) + ",";
+    public static String addNextDelimiter(String delimiters, String numbers) {
+        return delimiters + nextDelimiter(numbers) + ",";
     }
 
-    public static String cutString(String string) {
-        return string.substring(string.indexOf("]") + 1);
+    public static String nextDelimiter(String numbers) {
+        return numbers.substring(numbers.indexOf("[") + 1, numbers.indexOf("]"));
     }
 
-    public static String onlyOneNewDelimiter(String string) {
-        if (string.contains("[") && string.contains("]"))
-            return string.substring(3, string.indexOf("]"));
-        else return string.substring(2, string.indexOf("\n"));
+    public static String cutString(String numbers) {
+        return numbers.substring(numbers.indexOf("]") + 1);
     }
 
-    public static int toInt(String string) {
-        return Integer.valueOf(string);
+    public static String getOneShortDelimiter(String numbers) {
+        return numbers.substring(2, numbers.indexOf("\n"));
     }
 
 }
