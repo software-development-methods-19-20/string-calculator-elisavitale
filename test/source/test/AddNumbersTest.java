@@ -55,4 +55,9 @@ public class AddNumbersTest {
     void twoDelimiters() {
         assertEquals(6, StringCalculator.add("//[:][°]\n1:2°3"));
     }
+
+    @Test
+    void twoLongDelimiters() {
+        assertEquals(6, StringCalculator.add("//[::][!!!]\n1!!!2::3"));
+    }
 }
