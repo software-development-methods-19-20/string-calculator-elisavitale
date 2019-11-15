@@ -45,4 +45,9 @@ public class AddNumbersTest {
     void largerThanOneThousand() {
         assertEquals(2, StringCalculator.add("2,1001"));
     }
+
+    @Test
+    void threeColonDelimiter() {
+        assertEquals(6, StringCalculator.add("//[:::]\n1:::2:::3"));
+    }
 }
