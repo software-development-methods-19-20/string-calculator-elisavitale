@@ -60,4 +60,9 @@ public class AddNumbersTest {
     void twoLongDelimiters() {
         assertEquals(6, StringCalculator.add("//[::][!!!]\n1!!!2::3"));
     }
+
+    @Test
+    void squareBracket() {
+        assertEquals(4, StringCalculator.add("//[\n2[2"));
+    }
 }
