@@ -1,6 +1,8 @@
 package dssc.calculator;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import static java.util.Arrays.stream;
+import static java.lang.Integer.valueOf;
 
 public class StringCalculator {
 
@@ -12,16 +14,13 @@ public class StringCalculator {
     }
 
     private static int addAllNumbers(String numbers) {
-        int result = 0;
-        for (String num : getAllNumbers(numbers))
-            result += toInt(num);
-        return result;
+        return stream(getAllNumbers(numbers)).sum();
     }
 
-    private static String[] getAllNumbers(String numbers) {
+    private static int[] getAllNumbers(String numbers) {
         if (thereAreDelimiters(numbers))
             return splitAndFilterNumbers(numbers);
-        else return new String[] {numbers};
+        else return new int[] {valueOf(numbers)};
     }
 
     private static boolean thereAreDelimiters(String numbers) {
@@ -38,23 +37,23 @@ public class StringCalculator {
         return numbers.startsWith("//") && numbers.contains("\n");
     }
 
-    private static String[] splitAndFilterNumbers(String numbers) {
-        return keepSmallerThan1000(splitNumbers(numbers));
+    private static int[] splitAndFilterNumbers(String numbers) {
+        return keepSmallerThan1000(convertNumbersToInt(splitNumbersIntoArray(numbers)));
     }
 
-    private static String[] keepSmallerThan1000(String[] allNumbers) {
-        String filteredNumbers = "";
-        for (String number : allNumbers)
-            if (toInt(number) < 1000)
-                filteredNumbers += number + ",";
-        return filteredNumbers.split(",");
+    private static int[] keepSmallerThan1000(int[] allNumbers) {
+        return stream(allNumbers)
+                     .filter(x -> x < 1000)
+                     .toArray();
     }
 
-    private static int toInt(String string) {
-        return Integer.parseInt(string);
+    private static int[] convertNumbersToInt(String[] allNumbers) {
+        return stream(allNumbers)
+                     .mapToInt(Integer::valueOf)
+                     .toArray();
     }
 
-    private static String[] splitNumbers(String numbers) {
+    private static String[] splitNumbersIntoArray(String numbers) {
         return cleanString(numbers).split(",");
     }
 
@@ -96,16 +95,12 @@ public class StringCalculator {
     }
 
     private static String[] getManyOrLongDelimiters(String numbers) {
-        String delimiters = "";
-        do {
-            delimiters = addNextDelimiter(delimiters, numbers);
+        ArrayList<String> delimiters = new ArrayList<>();
+        while (containsManyOrLongDelimiters(numbers)) {
+            delimiters.add(nextDelimiter(numbers));
             numbers = cutString(numbers);
-        } while (containsManyOrLongDelimiters(numbers));
-        return delimiters.split(",");
-    }
-
-    private static String addNextDelimiter(String delimiters, String numbers) {
-        return delimiters + nextDelimiter(numbers) + ",";
+        }
+        return delimiters.toArray(new String[delimiters.size()]);
     }
 
     private static String nextDelimiter(String numbers) {
@@ -119,5 +114,4 @@ public class StringCalculator {
     private static String getOneShortDelimiter(String numbers) {
         return numbers.substring(2, numbers.indexOf("\n"));
     }
-
 }
